@@ -1,0 +1,551 @@
+"""
+실시간 시각화 모듈
+최적화 진행 과정을 실시간으로 모니터링하고 시각화합니다.
+"""
+
+import time
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from matplotlib.animation import FuncAnimation
+from typing import Dict, List, Any, Optional
+import threading
+import numpy as np
+
+
+class RealtimeVisualizer:
+    """실시간 최적화 진행 시각화기"""
+    
+    def __init__(self, site_width: int, site_height: int, update_interval: float = 2.0):
+        """
+        초기화
+        
+        Args:
+            site_width: 부지 너비
+            site_height: 부지 높이
+            update_interval: 업데이트 간격 (초)
+        """
+        self.site_width = site_width
+        self.site_height = site_height
+        self.update_interval = update_interval
+        
+        # 시각화 상태
+        self.is_active = False
+        self.current_layout = []
+        self.progress_data = {
+            'current': 0,
+            'total': 0,
+            'best_fitness': 0,
+            'fitness_history': [],
+            'start_time': None
+        }
+        
+        # 색상 매핑
+        self.process_colors = {
+            'main': '#FF6B6B',      # 빨강 계열 (주공정)
+            'sub': '#4ECDC4',       # 청록 계열 (부공정)
+            'fixed': '#95A5A6'      # 회색 (고정구역)
+        }
+        
+        # matplotlib 설정
+        plt.ion()  # 대화형 모드 활성화
+        self.fig = None
+        self.axes = None
+        
+        print(f"📺 실시간 시각화기 초기화: {site_width}×{site_height}mm")
+    
+    def start_optimization(self):
+        """최적화 시각화 시작"""
+        self.is_active = True
+        self.progress_data['start_time'] = time.time()
+        self.progress_data['fitness_history'] = []
+        
+        # 시각화 창 초기화
+        self._setup_visualization()
+        
+        print("📺 실시간 시각화 시작")
+    
+    def stop_optimization(self):
+        """최적화 시각화 종료"""
+        self.is_active = False
+        
+        if self.fig:
+            plt.close(self.fig)
+        
+        print("📺 실시간 시각화 종료")
+    
+    def update_progress(self, 
+                       current: int, 
+                       total: int, 
+                       best_fitness: float, 
+                       current_layout: List[Dict[str, Any]] = None):
+        """
+        진행 상황 업데이트
+        
+        Args:
+            current: 현재 진행 상황
+            total: 전체 작업량
+            best_fitness: 현재 최고 적합도
+            current_layout: 현재 배치 (선택사항)
+        """
+        if not self.is_active:
+            return
+        
+        # 진행 데이터 업데이트
+        self.progress_data['current'] = current
+        self.progress_data['total'] = total
+        self.progress_data['best_fitness'] = best_fitness
+        self.progress_data['fitness_history'].append(best_fitness)
+        
+        if current_layout:
+            self.current_layout = current_layout
+        
+        # 시각화 업데이트
+        self._update_visualization()
+    
+    def _setup_visualization(self):
+        """시각화 창 설정"""
+        
+        # 그래프 구성: 2x2 서브플롯
+        self.fig, self.axes = plt.subplots(2, 2, figsize=(15, 10))
+        self.fig.suptitle('공정 배치 최적화 실시간 모니터링', fontsize=16, fontweight='bold')
+        
+        # 서브플롯 제목 설정
+        self.axes[0, 0].set_title('현재 최적 배치')
+        self.axes[0, 1].set_title('적합도 진화 과정')
+        self.axes[1, 0].set_title('진행률')
+        self.axes[1, 1].set_title('최적화 통계')
+        
+        # 배치 시각화 축 설정
+        self.axes[0, 0].set_xlim(0, self.site_width)
+        self.axes[0, 0].set_ylim(0, self.site_height)
+        self.axes[0, 0].set_aspect('equal')
+        self.axes[0, 0].grid(True, alpha=0.3)
+        self.axes[0, 0].set_xlabel('X (mm)')
+        self.axes[0, 0].set_ylabel('Y (mm)')
+        
+        # 적합도 그래프 축 설정
+        self.axes[0, 1].grid(True, alpha=0.3)
+        self.axes[0, 1].set_xlabel('평가 횟수')
+        self.axes[0, 1].set_ylabel('적합도')
+        
+        plt.tight_layout()
+        plt.show(block=False)
+    
+    def _update_visualization(self):
+        """시각화 업데이트"""
+        
+        if not self.fig or not self.axes.any():
+            return
+        
+        try:
+            # 1. 현재 배치 시각화
+            self._update_layout_plot()
+            
+            # 2. 적합도 진화 과정
+            self._update_fitness_plot()
+            
+            # 3. 진행률 표시
+            self._update_progress_plot()
+            
+            # 4. 통계 정보
+            self._update_statistics_plot()
+            
+            # 화면 업데이트
+            self.fig.canvas.draw()
+            self.fig.canvas.flush_events()
+            
+        except Exception as e:
+            print(f"⚠️  시각화 업데이트 오류: {str(e)}")
+    
+    def _update_layout_plot(self):
+        """배치 그래프 업데이트"""
+        
+        ax = self.axes[0, 0]
+        ax.clear()
+        ax.set_title('현재 최적 배치')
+        ax.set_xlim(0, self.site_width)
+        ax.set_ylim(0, self.site_height)
+        ax.set_aspect('equal')
+        ax.grid(True, alpha=0.3)
+        ax.set_xlabel('X (mm)')
+        ax.set_ylabel('Y (mm)')
+        
+        # 부지 경계 표시
+        site_boundary = patches.Rectangle(
+            (0, 0), self.site_width, self.site_height,
+            linewidth=2, edgecolor='black', facecolor='none'
+        )
+        ax.add_patch(site_boundary)
+        
+        # 공정들 표시
+        for rect in self.current_layout:
+            building_type = rect.get('building_type', 'sub')
+            color = self.process_colors.get(building_type, '#CCCCCC')
+            
+            # 사각형 그리기
+            rectangle = patches.Rectangle(
+                (rect['x'], rect['y']), 
+                rect['width'], 
+                rect['height'],
+                linewidth=1,
+                edgecolor='black',
+                facecolor=color,
+                alpha=0.7
+            )
+            ax.add_patch(rectangle)
+            
+            # 라벨 추가
+            center_x = rect['x'] + rect['width'] / 2
+            center_y = rect['y'] + rect['height'] / 2
+            
+            # 회전 표시
+            rotation_marker = " (R)" if rect.get('rotated', False) else ""
+            label = f"{rect['id']}{rotation_marker}"
+            
+            ax.text(center_x, center_y, label, 
+                   ha='center', va='center', 
+                   fontsize=8, fontweight='bold',
+                   bbox=dict(boxstyle="round,pad=0.1", facecolor='white', alpha=0.8))
+        
+        # 범례 추가
+        legend_elements = [
+            patches.Patch(color=self.process_colors['main'], label='주공정'),
+            patches.Patch(color=self.process_colors['sub'], label='부공정'),
+            patches.Patch(color=self.process_colors['fixed'], label='고정구역')
+        ]
+        ax.legend(handles=legend_elements, loc='upper right')
+    
+    def _update_fitness_plot(self):
+        """적합도 그래프 업데이트"""
+        
+        ax = self.axes[0, 1]
+        ax.clear()
+        ax.set_title('적합도 진화 과정')
+        ax.grid(True, alpha=0.3)
+        ax.set_xlabel('평가 횟수')
+        ax.set_ylabel('적합도')
+        
+        if self.progress_data['fitness_history']:
+            history = self.progress_data['fitness_history']
+            x = range(1, len(history) + 1)
+            
+            ax.plot(x, history, 'b-', linewidth=2, alpha=0.7)
+            ax.fill_between(x, history, alpha=0.3)
+            
+            # 최고점 표시
+            max_fitness = max(history)
+            max_index = history.index(max_fitness)
+            ax.plot(max_index + 1, max_fitness, 'ro', markersize=8, label=f'최고: {max_fitness:.1f}')
+            
+            # 현재점 표시
+            current_fitness = history[-1]
+            ax.plot(len(history), current_fitness, 'go', markersize=6, label=f'현재: {current_fitness:.1f}')
+            
+            ax.legend()
+    
+    def _update_progress_plot(self):
+        """진행률 그래프 업데이트"""
+        
+        ax = self.axes[1, 0]
+        ax.clear()
+        ax.set_title('진행률')
+        
+        current = self.progress_data['current']
+        total = self.progress_data['total']
+        
+        if total > 0:
+            progress = current / total
+            
+            # 진행률 바
+            bars = ax.bar(['진행률'], [progress], color='green', alpha=0.7, width=0.5)
+            ax.set_ylim(0, 1)
+            ax.set_ylabel('완료율')
+            
+            # 퍼센트 표시
+            ax.text(0, progress/2, f'{progress:.1%}', 
+                   ha='center', va='center', fontsize=12, fontweight='bold')
+            
+            # 숫자 표시
+            ax.text(0, progress + 0.05, f'{current}/{total}', 
+                   ha='center', va='bottom', fontsize=10)
+            
+            # 예상 남은 시간 계산
+            if self.progress_data['start_time'] and progress > 0:
+                elapsed = time.time() - self.progress_data['start_time']
+                estimated_total = elapsed / progress
+                remaining = estimated_total - elapsed
+                
+                ax.text(0, -0.15, f'소요: {elapsed:.0f}초 | 예상 잔여: {remaining:.0f}초', 
+                       ha='center', va='top', fontsize=9, transform=ax.transAxes)
+    
+    def _update_statistics_plot(self):
+        """통계 정보 업데이트"""
+        
+        ax = self.axes[1, 1]
+        ax.clear()
+        ax.set_title('최적화 통계')
+        ax.axis('off')
+        
+        # 통계 텍스트 생성
+        stats_text = []
+        
+        # 기본 정보
+        current = self.progress_data['current']
+        total = self.progress_data['total']
+        best_fitness = self.progress_data['best_fitness']
+        
+        stats_text.append(f"📊 진행 상황: {current}/{total}")
+        stats_text.append(f"🏆 최고 적합도: {best_fitness:.2f}")
+        
+        # 배치 정보
+        if self.current_layout:
+            main_count = len([r for r in self.current_layout if r.get('building_type') == 'main'])
+            sub_count = len([r for r in self.current_layout if r.get('building_type') == 'sub'])
+            stats_text.append(f"🏭 주공정: {main_count}개")
+            stats_text.append(f"🔧 부공정: {sub_count}개")
+        
+        # 시간 정보
+        if self.progress_data['start_time']:
+            elapsed = time.time() - self.progress_data['start_time']
+            stats_text.append(f"⏱️ 소요시간: {elapsed:.1f}초")
+        
+        # 적합도 통계
+        if len(self.progress_data['fitness_history']) > 1:
+            history = self.progress_data['fitness_history']
+            avg_fitness = sum(history) / len(history)
+            improvement = history[-1] - history[0] if history else 0
+            
+            stats_text.append(f"📈 평균 적합도: {avg_fitness:.2f}")
+            stats_text.append(f"📊 총 개선량: {improvement:+.2f}")
+        
+        # 텍스트 표시
+        y_pos = 0.9
+        for text in stats_text:
+            ax.text(0.05, y_pos, text, transform=ax.transAxes, 
+                   fontsize=11, verticalalignment='top')
+            y_pos -= 0.12
+    
+    def capture_snapshot(self, filename: str = None) -> str:
+        """현재 상태 스냅샷 저장"""
+        
+        if not filename:
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            filename = f"optimization_snapshot_{timestamp}.png"
+        
+        if self.fig:
+            try:
+                self.fig.savefig(filename, dpi=150, bbox_inches='tight')
+                print(f"📸 스냅샷 저장: {filename}")
+                return filename
+            except Exception as e:
+                print(f"❌ 스냅샷 저장 실패: {str(e)}")
+                return ""
+        
+        return ""
+    
+    def save_progress_data(self, filename: str = None) -> str:
+        """진행 데이터를 JSON으로 저장"""
+        
+        if not filename:
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            filename = f"optimization_progress_{timestamp}.json"
+        
+        import json
+        
+        try:
+            progress_data = self.progress_data.copy()
+            progress_data['current_layout'] = self.current_layout
+            progress_data['timestamp'] = time.time()
+            
+            # start_time 직렬화를 위한 변환
+            if progress_data['start_time']:
+                progress_data['start_time'] = progress_data['start_time']
+            
+            with open(filename, 'w', encoding='utf-8') as f:
+                json.dump(progress_data, f, indent=2, ensure_ascii=False, default=str)
+            
+            print(f"💾 진행 데이터 저장: {filename}")
+            return filename
+            
+        except Exception as e:
+            print(f"❌ 진행 데이터 저장 실패: {str(e)}")
+            return ""
+
+
+class SimpleConsoleVisualizer:
+    """간단한 콘솔 기반 시각화기 (GUI 환경이 없는 경우)"""
+    
+    def __init__(self, site_width: int, site_height: int):
+        """
+        초기화
+        
+        Args:
+            site_width: 부지 너비
+            site_height: 부지 높이
+        """
+        self.site_width = site_width
+        self.site_height = site_height
+        self.is_active = False
+        self.last_update = 0
+        self.update_interval = 5.0  # 5초 간격
+        
+        print(f"🖥️  콘솔 시각화기 초기화: {site_width}×{site_height}mm")
+    
+    def start_optimization(self):
+        """최적화 시작"""
+        self.is_active = True
+        self.last_update = 0
+        print("🖥️  콘솔 시각화 시작")
+        print("=" * 60)
+    
+    def stop_optimization(self):
+        """최적화 종료"""
+        self.is_active = False
+        print("=" * 60)
+        print("🖥️  콘솔 시각화 종료")
+    
+    def update_progress(self, 
+                       current: int, 
+                       total: int, 
+                       best_fitness: float, 
+                       current_layout: List[Dict[str, Any]] = None):
+        """진행 상황 업데이트"""
+        
+        if not self.is_active:
+            return
+        
+        current_time = time.time()
+        
+        # 업데이트 간격 체크
+        if current_time - self.last_update < self.update_interval and current < total:
+            return
+        
+        self.last_update = current_time
+        
+        # 진행률 계산
+        progress = (current / total * 100) if total > 0 else 0
+        
+        # 진행 바 생성
+        bar_length = 30
+        filled_length = int(bar_length * progress // 100)
+        bar = '█' * filled_length + '░' * (bar_length - filled_length)
+        
+        # 상태 출력
+        print(f"\r🔄 진행률: |{bar}| {progress:.1f}% ({current}/{total}) "
+              f"| 최고 적합도: {best_fitness:.2f}", end='', flush=True)
+        
+        if current >= total:
+            print("\n✅ 최적화 완료!")
+    
+    def print_layout_summary(self, layout: List[Dict[str, Any]]):
+        """배치 요약 정보 출력"""
+        
+        if not layout:
+            return
+        
+        print(f"\n📋 배치 요약:")
+        print(f"   총 공정 수: {len(layout)}개")
+        
+        # 공정 타입별 개수
+        main_count = len([r for r in layout if r.get('building_type') == 'main'])
+        sub_count = len([r for r in layout if r.get('building_type') == 'sub'])
+        print(f"   주공정: {main_count}개, 부공정: {sub_count}개")
+        
+        # 배치 영역
+        if layout:
+            min_x = min(r['x'] for r in layout)
+            max_x = max(r['x'] + r['width'] for r in layout)
+            min_y = min(r['y'] for r in layout)
+            max_y = max(r['y'] + r['height'] for r in layout)
+            
+            layout_width = max_x - min_x
+            layout_height = max_y - min_y
+            
+            print(f"   배치 영역: {layout_width}×{layout_height}mm")
+            print(f"   부지 내 위치: ({min_x}, {min_y}) ~ ({max_x}, {max_y})")
+
+
+def create_visualizer(site_width: int, site_height: int, use_gui: bool = True):
+    """
+    환경에 맞는 시각화기 생성
+    
+    Args:
+        site_width: 부지 너비
+        site_height: 부지 높이
+        use_gui: GUI 사용 여부
+    
+    Returns:
+        적절한 시각화기 인스턴스
+    """
+    
+    if use_gui:
+        try:
+            # matplotlib 백엔드 확인
+            import matplotlib
+            backend = matplotlib.get_backend()
+            
+            if backend.lower() in ['agg', 'svg', 'pdf', 'ps']:
+                print("⚠️  GUI 백엔드가 아닙니다. 콘솔 시각화기를 사용합니다.")
+                return SimpleConsoleVisualizer(site_width, site_height)
+            
+            return RealtimeVisualizer(site_width, site_height)
+            
+        except ImportError:
+            print("⚠️  matplotlib을 사용할 수 없습니다. 콘솔 시각화기를 사용합니다.")
+            return SimpleConsoleVisualizer(site_width, site_height)
+    
+    else:
+        return SimpleConsoleVisualizer(site_width, site_height)
+
+
+if __name__ == "__main__":
+    # 테스트 실행
+    print("🧪 RealtimeVisualizer 테스트")
+    
+    # 테스트 데이터
+    site_width, site_height = 1000, 800
+    
+    test_layout = [
+        {'id': 'A', 'x': 100, 'y': 100, 'width': 150, 'height': 100, 'building_type': 'main', 'rotated': False},
+        {'id': 'B', 'x': 300, 'y': 150, 'width': 200, 'height': 120, 'building_type': 'main', 'rotated': True},
+        {'id': 'C', 'x': 200, 'y': 300, 'width': 180, 'height': 90, 'building_type': 'main', 'rotated': False},
+        {'id': 'W', 'x': 500, 'y': 200, 'width': 100, 'height': 80, 'building_type': 'sub', 'rotated': False},
+    ]
+    
+    try:
+        # GUI 시각화기 테스트
+        visualizer = RealtimeVisualizer(site_width, site_height)
+        visualizer.start_optimization()
+        
+        # 가상의 최적화 과정 시뮬레이션
+        for i in range(1, 21):
+            fitness = 800 + i * 10 + np.random.normal(0, 5)  # 점진적 개선 + 노이즈
+            visualizer.update_progress(i, 20, fitness, test_layout)
+            time.sleep(0.5)  # 0.5초 대기
+        
+        # 스냅샷 저장
+        snapshot_file = visualizer.capture_snapshot()
+        
+        # 잠시 대기 후 종료
+        time.sleep(2)
+        visualizer.stop_optimization()
+        
+        print("✅ GUI 시각화기 테스트 완료")
+        
+    except Exception as e:
+        print(f"⚠️  GUI 시각화기 테스트 실패: {str(e)}")
+        print("콘솔 시각화기로 대체 테스트")
+        
+        # 콘솔 시각화기 테스트
+        console_visualizer = SimpleConsoleVisualizer(site_width, site_height)
+        console_visualizer.start_optimization()
+        
+        for i in range(1, 21):
+            fitness = 800 + i * 10 + np.random.normal(0, 5)
+            console_visualizer.update_progress(i, 20, fitness, test_layout)
+            time.sleep(0.2)
+        
+        console_visualizer.print_layout_summary(test_layout)
+        console_visualizer.stop_optimization()
+        
+        print("✅ 콘솔 시각화기 테스트 완료")

@@ -1,0 +1,1100 @@
+{
+  "version": "2.4",
+  "grid_width": 975,
+  "grid_height": 630,
+  "grid_size": 975,
+  "total_area": 614250,
+  "site_type": "rectangle",
+  "aspect_ratio": 1.548,
+  "project_info": {
+    "company": "Kia Motors",
+    "country": "Mexico",
+    "city": "Monterrey",
+    "latitude": "25.6866",
+    "longitude": "-100.3161",
+    "length": "meter",
+    "area": "614250",
+    "volume": "cubic_meter",
+    "type": "WCS",
+    "origin": "[0.0, 0.0, 0.0]",
+    "siteId": "SITE-01",
+    "name": "Main Plant Site",
+    "width": "975",
+    "depth": "630"
+  },
+  "spaces": {
+    "MB01": {
+      "area": 27000.0,
+      "input_mode": "fixed_size",
+      "width": 216,
+      "height": 125,
+      "allow_rotation": true,
+      "name_kor": "프레스 공장",
+      "name_eng": "Stamping Shop",
+      "priority": "Main",
+      "building_type": "main",
+      "zone_category_kor": "생산",
+      "zone_category_eng": "Product",
+      "usage_kor": "공장",
+      "usage_eng": "Factory",
+      "main_process_sequence": 1,
+      "hazard_factors": {
+        "vibration": {
+          "present": true,
+          "level": 3,
+          "impact_radius": 120
+        },
+        "noise": {
+          "present": true,
+          "level": 3,
+          "impact_radius": 180
+        },
+        "gas": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "dust": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "heat": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "chemical": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        }
+      },
+      "environmental_class": "MEDIUM_IMPACT",
+      "safety_distances": {
+        "office": 60,
+        "food_area": 80,
+        "precision_work": 50
+      }
+    },
+    "MB02": {
+      "area": 38400.0,
+      "input_mode": "fixed_size",
+      "width": 240,
+      "height": 160,
+      "allow_rotation": true,
+      "name_kor": "차체 공장",
+      "name_eng": "Welding Shop",
+      "priority": "Main",
+      "building_type": "main",
+      "zone_category_kor": "생산",
+      "zone_category_eng": "Product",
+      "usage_kor": "공장",
+      "usage_eng": "Factory",
+      "main_process_sequence": 2,
+      "hazard_factors": {
+        "vibration": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "noise": {
+          "present": true,
+          "level": 3,
+          "impact_radius": 180
+        },
+        "gas": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "dust": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "heat": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "chemical": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        }
+      },
+      "environmental_class": "LOW_IMPACT",
+      "safety_distances": {}
+    },
+    "MB03": {
+      "area": 38400.0,
+      "input_mode": "fixed_size",
+      "width": 320,
+      "height": 120,
+      "allow_rotation": true,
+      "name_kor": "도장 공장",
+      "name_eng": "Paint Shop",
+      "priority": "Main",
+      "building_type": "main",
+      "zone_category_kor": "생산",
+      "zone_category_eng": "Product",
+      "usage_kor": "공장",
+      "usage_eng": "Factory",
+      "main_process_sequence": 3,
+      "hazard_factors": {
+        "vibration": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "noise": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "gas": {
+          "present": true,
+          "level": 3,
+          "impact_radius": 240
+        },
+        "dust": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "heat": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "chemical": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        }
+      },
+      "environmental_class": "LOW_IMPACT",
+      "safety_distances": {}
+    },
+    "MB04": {
+      "area": 96000.0,
+      "input_mode": "fixed_size",
+      "width": 400,
+      "height": 240,
+      "allow_rotation": true,
+      "name_kor": "조립 공장",
+      "name_eng": "Assembly shop",
+      "priority": "Main",
+      "building_type": "main",
+      "zone_category_kor": "생산",
+      "zone_category_eng": "Product",
+      "usage_kor": "공장",
+      "usage_eng": "Factory",
+      "main_process_sequence": 4,
+      "hazard_factors": {
+        "vibration": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "noise": {
+          "present": true,
+          "level": 3,
+          "impact_radius": 180
+        },
+        "gas": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "dust": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "heat": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "chemical": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        }
+      },
+      "environmental_class": "LOW_IMPACT",
+      "safety_distances": {}
+    },
+    "SB01": {
+      "area": 1920.0,
+      "input_mode": "fixed_size",
+      "width": 60,
+      "height": 32,
+      "allow_rotation": true,
+      "name_kor": "본부",
+      "name_eng": "Head Office",
+      "priority": "Sub",
+      "building_type": "sub",
+      "zone_category_kor": "관리",
+      "zone_category_eng": "Management",
+      "usage_kor": "사무실",
+      "usage_eng": "Office",
+      "main_process_sequence": null,
+      "hazard_factors": {
+        "vibration": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "noise": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "gas": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "dust": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "heat": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "chemical": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        }
+      },
+      "environmental_class": "CLEAN",
+      "safety_distances": {}
+    },
+    "SB02": {
+      "area": 180.0,
+      "input_mode": "fixed_size",
+      "width": 15,
+      "height": 12,
+      "allow_rotation": true,
+      "name_kor": "유틸리티 센터",
+      "name_eng": "Utility Center",
+      "priority": "Sub",
+      "building_type": "sub",
+      "zone_category_kor": "생산",
+      "zone_category_eng": "Product",
+      "usage_kor": "유틸리티",
+      "usage_eng": "Utility",
+      "main_process_sequence": null,
+      "hazard_factors": {
+        "vibration": {
+          "present": true,
+          "level": 3,
+          "impact_radius": 120
+        },
+        "noise": {
+          "present": true,
+          "level": 3,
+          "impact_radius": 180
+        },
+        "gas": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "dust": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "heat": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "chemical": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        }
+      },
+      "environmental_class": "MEDIUM_IMPACT",
+      "safety_distances": {
+        "office": 60,
+        "food_area": 80,
+        "precision_work": 50
+      }
+    },
+    "SB03": {
+      "area": 702.0000000000001,
+      "input_mode": "fixed_size",
+      "width": 45,
+      "height": 15,
+      "allow_rotation": true,
+      "name_kor": "메인게이트 빌딩",
+      "name_eng": "Main Gate Building",
+      "priority": "Sub",
+      "building_type": "sub",
+      "zone_category_kor": "지원",
+      "zone_category_eng": "Support",
+      "usage_kor": "출입구",
+      "usage_eng": "Access",
+      "main_process_sequence": null,
+      "hazard_factors": {
+        "vibration": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "noise": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "gas": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "dust": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "heat": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "chemical": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        }
+      },
+      "environmental_class": "CLEAN",
+      "safety_distances": {}
+    },
+    "SB04": {
+      "area": 1188.0,
+      "input_mode": "fixed_size",
+      "width": 36,
+      "height": 33,
+      "allow_rotation": true,
+      "name_kor": "폐수처리장",
+      "name_eng": "Waste Water Treatment Plant",
+      "priority": "Sub",
+      "building_type": "sub",
+      "zone_category_kor": "생산",
+      "zone_category_eng": "Product",
+      "usage_kor": "유틸리티",
+      "usage_eng": "Utility",
+      "main_process_sequence": null,
+      "hazard_factors": {
+        "vibration": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "noise": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "gas": {
+          "present": true,
+          "level": 3,
+          "impact_radius": 240
+        },
+        "dust": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "heat": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        },
+        "chemical": {
+          "present": false,
+          "level": 0,
+          "impact_radius": 0
+        }
+      },
+      "environmental_class": "LOW_IMPACT",
+      "safety_distances": {}
+    }
+  },
+  "adjacency_weights": {
+    "MB01-MB02": {
+      "weight": 10,
+      "preferred_gap": 0,
+      "description": "Absolutely necessary",
+      "slp_code": "A"
+    },
+    "MB01-MB03": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB02-MB03": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "MB01-MB04": {
+      "weight": 2,
+      "preferred_gap": 25,
+      "description": "Unimportant",
+      "slp_code": "U"
+    },
+    "MB02-MB04": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB03-MB04": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "MB01-SB01": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "MB02-SB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB03-SB01": {
+      "weight": 2,
+      "preferred_gap": 25,
+      "description": "Unimportant",
+      "slp_code": "U"
+    },
+    "MB04-SB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB01-SB02": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "MB02-SB02": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "MB03-SB02": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "MB04-SB02": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "SB01-SB02": {
+      "weight": 2,
+      "preferred_gap": 25,
+      "description": "Unimportant",
+      "slp_code": "U"
+    },
+    "MB01-SB03": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB02-SB03": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB03-SB03": {
+      "weight": 6,
+      "preferred_gap": 10,
+      "description": "Important",
+      "slp_code": "I"
+    },
+    "MB04-SB03": {
+      "weight": 6,
+      "preferred_gap": 10,
+      "description": "Important",
+      "slp_code": "I"
+    },
+    "SB01-SB03": {
+      "weight": 6,
+      "preferred_gap": 10,
+      "description": "Important",
+      "slp_code": "I"
+    },
+    "SB02-SB03": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "MB01-SB04": {
+      "weight": 2,
+      "preferred_gap": 25,
+      "description": "Unimportant",
+      "slp_code": "U"
+    },
+    "MB02-SB04": {
+      "weight": 2,
+      "preferred_gap": 25,
+      "description": "Unimportant",
+      "slp_code": "U"
+    },
+    "MB03-SB04": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "MB04-SB04": {
+      "weight": 2,
+      "preferred_gap": 25,
+      "description": "Unimportant",
+      "slp_code": "U"
+    },
+    "SB01-SB04": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "SB02-SB04": {
+      "weight": 2,
+      "preferred_gap": 25,
+      "description": "Unimportant",
+      "slp_code": "U"
+    },
+    "SB03-SB04": {
+      "weight": 2,
+      "preferred_gap": 25,
+      "description": "Unimportant",
+      "slp_code": "U"
+    },
+    "MB01-NB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB02-NB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB03-NB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "MB04-NB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "NB01-SB01": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "NB01-SB02": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "NB01-SB03": {
+      "weight": 10,
+      "preferred_gap": 0,
+      "description": "Absolutely necessary",
+      "slp_code": "A"
+    },
+    "NB01-SB04": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES01-MB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES01-MB02": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES01-MB03": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES01-MB04": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES01-SB01": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "ES01-SB02": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES01-SB03": {
+      "weight": 10,
+      "preferred_gap": 0,
+      "description": "Absolutely necessary",
+      "slp_code": "A"
+    },
+    "ES01-SB04": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES01-NB01": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "ES02-MB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES02-MB02": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES02-MB03": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES02-MB04": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES02-SB01": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "ES02-SB02": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES02-SB03": {
+      "weight": 10,
+      "preferred_gap": 0,
+      "description": "Absolutely necessary",
+      "slp_code": "A"
+    },
+    "ES02-SB04": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES02-NB01": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "ES01-ES02": {
+      "weight": 6,
+      "preferred_gap": 10,
+      "description": "Important",
+      "slp_code": "I"
+    },
+    "ES03-MB01": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES03-MB02": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES03-MB03": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES03-MB04": {
+      "weight": 4,
+      "preferred_gap": 15,
+      "description": "Ordinary closeness",
+      "slp_code": "O"
+    },
+    "ES03-SB01": {
+      "weight": 8,
+      "preferred_gap": 5,
+      "description": "Especially important",
+      "slp_code": "E"
+    },
+    "ES03-SB02": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES03-SB03": {
+      "weight": 10,
+      "preferred_gap": 0,
+      "description": "Absolutely necessary",
+      "slp_code": "A"
+    },
+    "ES03-SB04": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES03-NB01": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES01-ES03": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    },
+    "ES02-ES03": {
+      "weight": 0,
+      "preferred_gap": 50,
+      "description": "Undesirable",
+      "slp_code": "X"
+    }
+  },
+  "fixed_zones": [
+    {
+      "id": "ES01",
+      "type": "주차장",
+      "shape": "rectangle",
+      "x": 565,
+      "y": 10,
+      "width": 400,
+      "height": 150,
+      "color": "lightgray",
+      "name": "주차장-1",
+      "source": "external_space_sheet",
+      "fixed": false,
+      "area_info": {
+        "calculated_area": 60000,
+        "target_area": 60000,
+        "area_ratio": null
+      }
+    },
+    {
+      "id": "ES02",
+      "type": "주차장",
+      "shape": "rectangle",
+      "x": 10,
+      "y": 10,
+      "width": 400,
+      "height": 150,
+      "color": "lightgray",
+      "name": "주차장-2",
+      "source": "external_space_sheet",
+      "fixed": false,
+      "area_info": {
+        "calculated_area": 60000,
+        "target_area": 60000,
+        "area_ratio": null
+      }
+    },
+    {
+      "id": "ES03",
+      "type": "외부공간",
+      "shape": "rectangle",
+      "x": 243,
+      "y": 445,
+      "width": 175,
+      "height": 175,
+      "color": "lightblue",
+      "name": "변전소",
+      "source": "external_space_sheet",
+      "fixed": false,
+      "area_info": {
+        "calculated_area": 30625,
+        "target_area": 30712.5,
+        "area_ratio": 0.05
+      }
+    },
+    {
+      "id": "NB01",
+      "type": "고정구역",
+      "shape": "rectangle",
+      "x": 479,
+      "y": 15,
+      "width": 16,
+      "height": 5,
+      "color": "orange",
+      "name": "주출입구",
+      "source": "node_building",
+      "fixed": true,
+      "building_info": {
+        "original_type": "Node",
+        "position": "남측 중앙 고정",
+        "coordinates": "(479, 15)"
+      }
+    }
+  ],
+  "context": {
+    "surrounding_sites": {
+      "동": {
+        "usage_kor": "주거시설",
+        "usage_eng": "Residential",
+        "hazard_restrictions": {
+          "vibration": "x",
+          "noise": "x",
+          "gas": "x"
+        },
+        "sensitivity": "HIGH",
+        "buffer_distance": 200
+      },
+      "서": {
+        "usage_kor": "산업시설",
+        "usage_eng": "Industrial",
+        "hazard_restrictions": {
+          "vibration": "o",
+          "noise": "x",
+          "gas": "x"
+        },
+        "sensitivity": "MEDIUM",
+        "buffer_distance": 100
+      },
+      "남": {
+        "usage_kor": "녹지",
+        "usage_eng": "Green",
+        "hazard_restrictions": {
+          "vibration": "x",
+          "noise": "x",
+          "gas": "x"
+        },
+        "sensitivity": "HIGH",
+        "buffer_distance": 200
+      },
+      "북": {
+        "usage_kor": "주차장",
+        "usage_eng": "Parking lot",
+        "hazard_restrictions": {
+          "vibration": "o",
+          "noise": "o",
+          "gas": "o"
+        },
+        "sensitivity": "LOW",
+        "buffer_distance": 50
+      }
+    },
+    "boundary_constraints": {
+      "east": {
+        "restricted_hazards": [
+          "vibration",
+          "noise",
+          "gas"
+        ],
+        "penalty": 3.0,
+        "buffer_distance": 200
+      },
+      "west": {
+        "restricted_hazards": [
+          "noise",
+          "gas"
+        ],
+        "penalty": 2.0,
+        "buffer_distance": 100
+      },
+      "south": {
+        "restricted_hazards": [
+          "vibration",
+          "noise",
+          "gas"
+        ],
+        "penalty": 3.0,
+        "buffer_distance": 200
+      },
+      "north": {
+        "restricted_hazards": [],
+        "penalty": 1.0,
+        "buffer_distance": 50
+      }
+    },
+    "metadata": {
+      "extraction_info": {
+        "surrounding_sheet": "03. 인접대지 용도 (Site Surrounding)",
+        "criteria_sheet": "03-1. 인접대지 용도별 유해인자 허용 기준표"
+      },
+      "validation": {
+        "all_directions_defined": true,
+        "hazard_criteria_complete": true
+      }
+    }
+  },
+  "hazard_metadata": {
+    "supported_types": [
+      "vibration",
+      "noise",
+      "gas",
+      "dust",
+      "heat",
+      "chemical"
+    ],
+    "type_names": {
+      "vibration": "진동",
+      "noise": "소음",
+      "gas": "가스",
+      "dust": "분진",
+      "heat": "고온",
+      "chemical": "화학물질"
+    },
+    "environmental_classes": {
+      "CLEAN": {
+        "name": "청정",
+        "color": "#4CAF50"
+      },
+      "LOW_IMPACT": {
+        "name": "저영향",
+        "color": "#FFEB3B"
+      },
+      "MEDIUM_IMPACT": {
+        "name": "중영향",
+        "color": "#FF9800"
+      },
+      "HIGH_IMPACT": {
+        "name": "고영향",
+        "color": "#F44336"
+      },
+      "CRITICAL": {
+        "name": "위험",
+        "color": "#9C27B0"
+      }
+    },
+    "extraction_info": {
+      "vibration_column": "U",
+      "noise_column": "V",
+      "gas_column": "W",
+      "data_source": "01. 건물 (Building) 시트"
+    }
+  },
+  "optimization_params": {
+    "generations": 200,
+    "population_size": 50,
+    "show_realtime": true,
+    "update_interval": 10,
+    "num_diverse_solutions": 5
+  },
+  "optimization_mode": {
+    "sa": true,
+    "graph": true,
+    "grasp": true,
+    "diversity": true,
+    "description": "엑셀 변환 모드 (모든 고급 기법 적용, 유해인자 + 새로운 필드 고려)"
+  },
+  "created_at": "2025-08-22T14:40:16.544849",
+  "source_file": "01. 멕시코 몬테레이 공장 5차 Data Sheet_250820a.xlsx",
+  "conversion_stats": {
+    "num_spaces": 8,
+    "num_adjacencies": 66,
+    "num_fixed_zones": 4,
+    "main_buildings": 4,
+    "sub_buildings": 4,
+    "node_buildings": 1,
+    "external_spaces_in_fixed_zones": 3,
+    "nodes_in_fixed_zones": 0,
+    "all_fixed_size": true,
+    "hazard_statistics": {
+      "spaces_with_hazards": 6,
+      "clean_spaces": 2,
+      "high_risk_spaces": 0,
+      "spaces_with_safety_distances": 2
+    },
+    "zone_category_statistics": {
+      "지원": 1,
+      "생산": 6,
+      "관리": 1
+    },
+    "process_sequence_statistics": {
+      "spaces_with_sequence": 4,
+      "max_sequence": 4
+    }
+  },
+  "features": {
+    "rectangular_site": true,
+    "fixed_size_spaces": true,
+    "area_based_spaces": false,
+    "space_rotation": true,
+    "project_data_integration": true,
+    "hazard_factors": true,
+    "environmental_classification": true,
+    "safety_distances": true,
+    "surrounding_context": true,
+    "boundary_constraints": true,
+    "zone_categories": true,
+    "process_sequences": true
+  }
+}

@@ -1,0 +1,350 @@
+"""
+전수 탐색 최적화 엔진
+Factory Mass Layout Algorithm을 기반으로 모든 가능한 주공정 배치 조합을 탐색합니다.
+"""
+
+import time
+from typing import Dict, List, Any, Optional
+from optimization.base_engine import OptimizationEngine
+
+
+class ExhaustiveSearchOptimizer(OptimizationEngine):
+    """전수 탐색 기반 최적화 엔진"""
+    
+    def __init__(self, layout_generator, fitness_calculator, constraint_handler):
+        """
+        초기화
+        
+        Args:
+            layout_generator: 배치 생성기
+            fitness_calculator: 적합도 계산기
+            constraint_handler: 제약 조건 처리기
+        """
+        super().__init__(layout_generator, fitness_calculator, constraint_handler)
+        self.name = "전수 탐색 (Exhaustive Search)"
+        self.evaluated_combinations = 0
+        self.valid_combinations = 0
+        
+    def optimize(self, 
+                main_processes: List[Dict[str, Any]], 
+                sub_processes: List[Dict[str, Any]], 
+                visualizer=None,
+                max_solutions: int = 8,
+                **kwargs) -> List[Dict[str, Any]]:
+        """
+        전수 탐색 최적화 실행
+        
+        Args:
+            main_processes: 주공정 목록 (순서대로 정렬된 상태)
+            sub_processes: 부공정 목록
+            visualizer: 실시간 시각화기 (선택사항)
+            max_solutions: 반환할 최대 솔루션 수
+            **kwargs: 추가 파라미터
+        
+        Returns:
+            최적화된 솔루션 목록 (적합도 순으로 정렬)
+        """
+        print(f"🔍 {self.name} 최적화 시작")
+        print(f"   주공정: {len(main_processes)}개")
+        print(f"   부공정: {len(sub_processes)}개")
+        
+        start_time = time.time()
+        self.best_solutions = []
+        self.fitness_history = []
+        self.evaluated_combinations = 0
+        self.valid_combinations = 0
+        
+        # 1단계: 주공정 배치 조합 생성
+        print("\n1️⃣ 주공정 배치 조합 생성 중...")
+        main_layout_combinations = self.layout_generator.generate_main_layout_combinations(main_processes)
+        
+        if not main_layout_combinations:
+            print("❌ 유효한 주공정 배치 조합을 찾지 못했습니다.")
+            return []
+        
+        total_combinations = len(main_layout_combinations)
+        print(f"✅ 주공정 배치 조합: {total_combinations}개")
+        
+        # 2단계: 각 주공정 배치에 부공정 추가 및 평가
+        print(f"\n2️⃣ 부공정 배치 및 적합도 평가 중...")
+        
+        update_interval = max(1, total_combinations // 20)  # 5% 간격으로 업데이트
+        
+        for i, main_layout in enumerate(main_layout_combinations):
+            self.evaluated_combinations += 1
+            
+            # 부공정 추가
+            complete_layout = self.layout_generator.place_sub_processes_optimally(
+                main_layout, 
+                sub_processes,
+                self.fitness_calculator.adjacency_weights
+            )
+            
+            # 제약 조건 검사
+            if self.constraint_handler.is_valid(complete_layout):
+                self.valid_combinations += 1
+                
+                # 적합도 계산
+                fitness = self.fitness_calculator.calculate_fitness(complete_layout)
+                
+                # 배치 코드 생성
+                layout_code = self.layout_generator.generate_layout_code(complete_layout)
+                
+                # 솔루션 생성
+                solution = {
+                    'layout': complete_layout,
+                    'fitness': fitness,
+                    'code': layout_code,
+                    'method': 'exhaustive_search',
+                    'generation': i + 1,
+                    'evaluation_time': time.time() - start_time
+                }
+                
+                # 베스트 솔루션 업데이트
+                self.update_best_solutions(solution, max_solutions * 2)  # 여유있게 수집
+                self.fitness_history.append(fitness)
+                
+                # 실시간 시각화 업데이트
+                if visualizer and i % update_interval == 0:
+                    visualizer.update_progress(
+                        current=i + 1,
+                        total=total_combinations,
+                        best_fitness=max(self.fitness_history) if self.fitness_history else 0,
+                        current_layout=complete_layout
+                    )
+            
+            # 진행률 출력 (10% 간격)
+            if (i + 1) % max(1, total_combinations // 10) == 0:
+                progress = ((i + 1) / total_combinations) * 100
+                elapsed = time.time() - start_time
+                print(f"   진행률: {progress:.0f}% ({i + 1}/{total_combinations}) "
+                      f"- 유효: {self.valid_combinations}개 - 소요시간: {elapsed:.1f}초")
+        
+        end_time = time.time()
+        optimization_time = end_time - start_time
+        
+        # 결과 정리
+        final_solutions = sorted(self.best_solutions, key=lambda x: x['fitness'], reverse=True)[:max_solutions]
+        
+        print(f"\n✅ {self.name} 최적화 완료!")
+        print(f"   총 소요시간: {optimization_time:.2f}초")
+        print(f"   평가된 조합: {self.evaluated_combinations}개")
+        print(f"   유효한 조합: {self.valid_combinations}개 ({self.valid_combinations/self.evaluated_combinations*100:.1f}%)")
+        
+        if final_solutions:
+            best_fitness = final_solutions[0]['fitness']
+            worst_fitness = final_solutions[-1]['fitness']
+            print(f"   최고 적합도: {best_fitness:.2f}")
+            print(f"   최저 적합도: {worst_fitness:.2f}")
+            print(f"   반환 솔루션: {len(final_solutions)}개")
+        
+        return final_solutions
+    
+    def get_optimization_statistics(self) -> Dict[str, Any]:
+        """최적화 통계 정보 반환"""
+        
+        stats = {
+            'algorithm': self.name,
+            'evaluated_combinations': self.evaluated_combinations,
+            'valid_combinations': self.valid_combinations,
+            'success_rate': self.valid_combinations / max(1, self.evaluated_combinations),
+            'solutions_found': len(self.best_solutions),
+            'fitness_statistics': {}
+        }
+        
+        if self.fitness_history:
+            stats['fitness_statistics'] = {
+                'max': max(self.fitness_history),
+                'min': min(self.fitness_history),
+                'average': sum(self.fitness_history) / len(self.fitness_history),
+                'count': len(self.fitness_history)
+            }
+        
+        return stats
+    
+    def analyze_search_space(self, main_processes: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """탐색 공간 분석"""
+        
+        num_processes = len(main_processes)
+        
+        # 회전 조합 수 (각 공정마다 0도/90도)
+        rotation_combinations = 2 ** num_processes
+        
+        # 방향 조합 수 (공정 간 연결 방향: bottom, right, top, left)
+        direction_combinations = 4 ** max(0, num_processes - 1)
+        
+        # 총 조합 수
+        total_combinations = rotation_combinations * direction_combinations
+        
+        # 예상 실행 시간 (조합당 평균 10ms 가정)
+        estimated_time_seconds = total_combinations * 0.01
+        
+        analysis = {
+            'process_count': num_processes,
+            'rotation_combinations': rotation_combinations,
+            'direction_combinations': direction_combinations,
+            'total_combinations': total_combinations,
+            'estimated_time_seconds': estimated_time_seconds,
+            'estimated_time_formatted': self._format_time(estimated_time_seconds),
+            'complexity_class': self._classify_complexity(total_combinations),
+            'recommendations': self._get_complexity_recommendations(total_combinations)
+        }
+        
+        return analysis
+    
+    def _format_time(self, seconds: float) -> str:
+        """시간을 읽기 쉬운 형태로 포맷"""
+        
+        if seconds < 60:
+            return f"{seconds:.1f}초"
+        elif seconds < 3600:
+            minutes = seconds / 60
+            return f"{minutes:.1f}분"
+        elif seconds < 86400:
+            hours = seconds / 3600
+            return f"{hours:.1f}시간"
+        else:
+            days = seconds / 86400
+            return f"{days:.1f}일"
+    
+    def _classify_complexity(self, total_combinations: int) -> str:
+        """복잡도 분류"""
+        
+        if total_combinations <= 1000:
+            return "매우 낮음"
+        elif total_combinations <= 10000:
+            return "낮음"
+        elif total_combinations <= 100000:
+            return "보통"
+        elif total_combinations <= 1000000:
+            return "높음"
+        else:
+            return "매우 높음"
+    
+    def _get_complexity_recommendations(self, total_combinations: int) -> List[str]:
+        """복잡도에 따른 권장사항"""
+        
+        recommendations = []
+        
+        if total_combinations <= 1000:
+            recommendations.append("전수 탐색이 매우 빠르게 완료됩니다")
+            recommendations.append("최적의 결과를 보장합니다")
+        
+        elif total_combinations <= 10000:
+            recommendations.append("전수 탐색이 적절한 시간 내에 완료됩니다")
+            recommendations.append("고품질 결과를 기대할 수 있습니다")
+        
+        elif total_combinations <= 100000:
+            recommendations.append("전수 탐색에 다소 시간이 걸릴 수 있습니다")
+            recommendations.append("다른 알고리즘과 병행 사용을 고려하세요")
+        
+        elif total_combinations <= 1000000:
+            recommendations.append("전수 탐색에 상당한 시간이 필요합니다")
+            recommendations.append("유전 알고리즘이나 시뮬레이티드 어닐링 사용을 권장합니다")
+        
+        else:
+            recommendations.append("전수 탐색은 비실용적입니다")
+            recommendations.append("휴리스틱 알고리즘 사용을 강력히 권장합니다")
+            recommendations.append("공정 수를 줄이거나 제약 조건을 단순화하는 것을 고려하세요")
+        
+        return recommendations
+    
+    def print_search_analysis(self, main_processes: List[Dict[str, Any]]):
+        """탐색 공간 분석 결과 출력"""
+        
+        analysis = self.analyze_search_space(main_processes)
+        
+        print(f"\n📊 전수 탐색 복잡도 분석")
+        print(f"=" * 50)
+        print(f"🏭 공정 수: {analysis['process_count']}개")
+        print(f"🔄 회전 조합: {analysis['rotation_combinations']:,}개")
+        print(f"➡️  방향 조합: {analysis['direction_combinations']:,}개")
+        print(f"🎯 총 조합 수: {analysis['total_combinations']:,}개")
+        print(f"⏱️  예상 시간: {analysis['estimated_time_formatted']}")
+        print(f"📈 복잡도: {analysis['complexity_class']}")
+        
+        print(f"\n💡 권장사항:")
+        for recommendation in analysis['recommendations']:
+            print(f"   - {recommendation}")
+
+
+if __name__ == "__main__":
+    # 테스트 실행
+    print("🧪 ExhaustiveSearchOptimizer 테스트")
+    
+    from core.config_loader import ConfigLoader, create_sample_config
+    from core.process_classifier import ProcessClassifier
+    from core.layout_generator import SequenceLayoutGenerator
+    from core.fitness_calculator import FitnessCalculator
+    from core.constraint_handler import ConstraintHandler
+    
+    try:
+        # 샘플 설정 생성 및 로드
+        create_sample_config('test_exhaustive_config.json')
+        loader = ConfigLoader('test_exhaustive_config.json')
+        config = loader.load_config()
+        
+        # 모듈들 초기화
+        classifier = ProcessClassifier(config)
+        main_processes, sub_processes = classifier.classify_processes()
+        
+        layout_generator = SequenceLayoutGenerator(
+            site_width=config['site_dimensions']['width'],
+            site_height=config['site_dimensions']['height'],
+            fixed_zones=loader.get_fixed_zones()
+        )
+        
+        fitness_calculator = FitnessCalculator(
+            adjacency_weights=config.get('adjacency_weights', {}),
+            spaces=config['spaces'],
+            fixed_zones=loader.get_fixed_zones(),
+            site_width=config['site_dimensions']['width'],
+            site_height=config['site_dimensions']['height']
+        )
+        
+        constraint_handler = ConstraintHandler(
+            site_width=config['site_dimensions']['width'],
+            site_height=config['site_dimensions']['height'],
+            fixed_zones=loader.get_fixed_zones(),
+            hazard_factors=config.get('hazard_factors', {})
+        )
+        
+        # 전수 탐색 최적화기 초기화 및 테스트
+        optimizer = ExhaustiveSearchOptimizer(
+            layout_generator=layout_generator,
+            fitness_calculator=fitness_calculator,
+            constraint_handler=constraint_handler
+        )
+        
+        # 탐색 공간 분석
+        optimizer.print_search_analysis(main_processes)
+        
+        # 최적화 실행 (작은 규모로 테스트)
+        print(f"\n🚀 최적화 테스트 실행")
+        solutions = optimizer.optimize(
+            main_processes=main_processes,
+            sub_processes=sub_processes,
+            max_solutions=5
+        )
+        
+        if solutions:
+            print(f"\n🏆 최적화 결과:")
+            for i, solution in enumerate(solutions[:3], 1):  # 상위 3개만 출력
+                print(f"   {i}. 적합도: {solution['fitness']:.2f} | 코드: {solution['code']}")
+        
+        # 통계 정보
+        stats = optimizer.get_optimization_statistics()
+        print(f"\n📈 최적화 통계:")
+        print(f"   성공률: {stats['success_rate']:.1%}")
+        print(f"   솔루션 수: {stats['solutions_found']}개")
+        
+        if stats['fitness_statistics']:
+            fs = stats['fitness_statistics']
+            print(f"   적합도 범위: {fs['min']:.1f} ~ {fs['max']:.1f} (평균: {fs['average']:.1f})")
+        
+        print("\n✅ 테스트 완료")
+        
+    except Exception as e:
+        print(f"❌ 테스트 실패: {str(e)}")
+        import traceback
+        traceback.print_exc()
